@@ -1,0 +1,56 @@
+#自动调用api保活，加密版
+name: Auto Api Task
+
+on:
+  release:
+    types: [published]
+  push:
+    branches:
+      - master
+      - develop
+  schedule:
+    - cron: '0 */6 * * *'
+  watch:
+    types: [started]
+   
+jobs:
+   Task:
+    permissions: write-all
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout Branch Status
+      uses: actions/checkout@master
+    - name: Install and set up Python Env
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+    - name: Install requests and jq
+      run: |
+        pip install requests
+        pip install pytz
+        pip install PyNaCl
+        sudo apt install jq
+        type -p curl >/dev/null || sudo apt install curl -y
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && sudo apt update \
+        && sudo apt install gh -y
+    - name: Call the Microsoft Graph API to get the refresh_token
+      run: |
+        echo `date +"%Y-%m-%d %H:%M:%S"` begin > time.log
+        python auto_renew_e5.py -i $CONFIG_ID -s $CONFIG_KEY -r $CONFIG_REFRESH
+      env:
+        CONFIG_ID: ${{ secrets.CONFIG_ID }}
+        CONFIG_KEY: ${{ secrets.CONFIG_KEY }}
+        CONFIG_REFRESH: ${{ secrets.CONFIG_REFRESH }}
+    - name: Update secret CONFIG_REFRESH
+      run: |
+        RAW=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/actions/secrets/public-key )
+        KEY_ID=$( gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/actions/secrets/public-key | jq -r .key_id )
+        PUB_KEY=$( gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/actions/secrets/public-key | jq -r .key )
+        SECRET_VALUE=$(cat refresh_token.txt)
+        ENCRYPTED_VALUE=$(python github_secret_encrypt.py -p $PUB_KEY -s $SECRET_VALUE)
+        gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/actions/secrets/CONFIG_REFRESH -f encrypted_value=$ENCRYPTED_VALUE -f key_id=$KEY_ID
+      env:
+        GH_TOKEN: ${{ secrets.E5_API }}
