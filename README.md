@@ -126,7 +126,7 @@ Click `Actions`, then choose the `Secrets` tab, and then click `New repository s
 
 Please add 4 secrets to your repository:
 - `CONFIG_ID`：Save `Application (client) ID [1]` as the value.
-- `CONFIG_SECRET`：Save `Value [3]` as the value.
+- `CONFIG_KEY`：Save `Value [3]` as the value.
 - `CONFIG_REFRESH`：Save `refresh_token [4]` as the value.
 - `E5_API`：Save `fine-grained token [5]` as the value.
 
