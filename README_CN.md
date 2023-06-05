@@ -4,6 +4,7 @@
 ![License](https://shields.io/badge/license-MIT-%23373737)
 ![Repo Size](https://img.shields.io/github/repo-size/KKtheGhost/E5_Developer_Renew)
 ![Contributors](https://img.shields.io/github/contributors/KKtheGhost/E5_Developer_Renew)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 文档地址: [ENG](https://github.com/KKtheGhost/E5_Developer_Renew/blob/master/README.md) | [简体中文](https://github.com/KKtheGhost/E5_Developer_Renew/blob/master/README_CN.md)
 
@@ -43,21 +44,22 @@
 
 点击 `Register` 完成注册。
 
-请保存你新创建的 application 的 **`Application (client) ID [1]`** 和 **`Client secret [2]`** 以便之后使用
+请保存你新创建的 application 的 **`Application (client) ID`** 为 **`Value[1]`**，保存 **`Client secret`** 为 **`Value[2]`** 以便之后使用
 
 ### <font color="Olive">**3. 为你的新 Application 创建一个新的 Certificate**</font>
 
-Click your new application's name in the `App registrations` page, and then click `Certificates & secrets` in the left sidebar.
+在 `App registrations` 页面中，点击你的新应用程序的名称，然后在左侧边栏中点击`Certificates & secrets`。
 
-Click `New client secret` and fill in a description for your new client secret.
+点击 `New client secret`，并为你的新客户端密码填写一个描述。
 
-Please save your new client secret's **`Value [3]`** for later use.
+请保存你的新客户端密码为 **`Value [3]`**，以备后用。
 
-Then click `Authentication` in the left sidebar. In `Implicit grant and hybrid flows`, select `ID tokens` and `Access tokens`. The click `Save` to finish the `Authentication` configuration.
+然后点击左侧边栏中的 `Authentication`。在 `Implicit grant and hybrid flows` 中，选择 `ID tokens` 和 `Access tokens` 。然后点击 `Save` 以完成 `Authentication` 配置。
 
-Then, click `API permissions` in the left sidebar. Click `Add a permission`, and then select `Microsoft Graph` in the `APIs my organization uses` section.
+接下来，在左侧边栏中点击 `API permissions`。点击 `Add a permission`，然后在 `APIs my organization uses` 部分中选择 `Microsoft Graph`。
 
-Add all the permissions listed below, and click `Add permissions` to finish the `API permissions` configuration:
+添加下面列出的所有权限，并点击 `Add permissions` 以完成 `API permissions` 配置：
+
 - `files.read.all`
 - `files.readwrite.all`
 - `sites.read.all`
@@ -71,29 +73,28 @@ Add all the permissions listed below, and click `Add permissions` to finish the 
 - `mailboxsetting.read`
 - `mailboxsetting.readwrite`
 
-To be honest, not all of the permissions are required. It depends on the API list in `auto_renew_e5.py`. You can remove the permissions if you don't need.
+老实说，并非所有权限都是必需的。这取决于 `auto_renew_e5.py` 中的 API 列表。如果你不需要，可以移除这些权限。
 
-Finally, click `Grant admin consent for <your tenant name>` to grant the permissions to your tenant.
+最后，点击 `Grant admin consent for <your tenant name>`，将权限授予你的租户。
 
-### <font color="Olive">**4. Get your first `refresh token [4]`.**</font>
+### <font color="Olive">**4. 获取你 E5 App 的 `refresh token` 并保存为 `Value[4]`.**</font>
 
-Install `rclone` on your computer, and then run the following command to get your first refresh token.
+请在您的计算机上安装 `rclone`，然后运行以下命令以获取您的首个 refresh token。
 
-- For windows users, you can download `rclone` from [here](https://rclone.org/downloads/), or use `choco install rclone` to install it.
-- For Linux and macOS users, please refer to [this article](https://rclone.org/install/).
+- 对于 Windows 用户，您可以从[这里](https://rclone.org/downloads/)下载 `rclone`，或使用 `choco install rclone` 进行安装。
+- 对于 Linux 和 macOS 用户，请参考[此文章](https://rclone.org/install/)。
 
-For more information, please refer to [this article](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app). It will take you about 5 minutes to finish the registration. 
+有关更多信息，请参阅[此文章](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)。完成注册大约需要 5 分钟。
 
-When you are done, please run the following command to get your first refresh token.
-
+完成后，请运行以下命令以获取您的首个 refresh token。
 ```bash
-rclone authorize "onedrive" "<Application (client) ID>" "<Value>"
+rclone authorize "onedrive" "<Value[1]>" "<Value[3]>"
 ```
- > Note: `Client secret` is not required.
+ > Note: `Client secret (Value[2])` 不是必须的.
 
-After you run the command, a browser window will pop up, and you will be asked to log in to your E5 account. After you log in, you will be asked to grant the permissions to your new application. Please click `Accept` to finish the authorization.
+在运行命令后，将会弹出一个浏览器窗口，并要求您登录到您的E5帐户。登录后，您将被要求授予新应用程序的权限。请点击 `Accept` 以完成授权。
 
-Then `rclone` will return a JSON string:
+然后，`rclone` 将返回一个 JSON 字符串：
 
 ```json
 {
@@ -103,35 +104,35 @@ Then `rclone` will return a JSON string:
 	"expiry": "2023-03-20T23:06:01.8800926+08:00"
 }
 ```
-And the `refresh_token` is what we need.
+其中的 `refresh_token` 字段就是我们需要的 **`Value[4]`**.
 
-### <font color="Olive">**5. Create a Fine-grained Token for your forked repository.**</font>
+### <font color="Olive">**5. 为你的 E5 自动更新仓库创建一个 Fine-grained Token**</font>
 
-Login to your **[GitHub account](https://github.com)**, and click your profile picture in the top right corner, and then click `Settings`.
+登录到你的 **[GitHub account](https://github.com)**，点击右上角的个人头像，然后点击 `Settings`。
 
-In the end of left sidebar, click `Developer settings`, and then click `Personal access tokens`.
+在左侧边栏底部，点击 `Developer settings`，然后点击 `Personal access tokens`。
 
-Select `Fine-grained permissions`, and then click `Generate new token`.
+选择 `Fine-grained permissions`，然后点击 `Generate new token`。
 
-Fill in a description for your new token, set the expiration date to 1 year. In `Repository access` section, select `Only select repositories`, and then select your forked repository. In `Repository access` section, select `Secrets`, `Metadata` and `Actions`, set the permission to `Read & write`. Finally, click `Generate token` to finish the token creation.
+为你的新令牌填写一个描述，并将过期日期设置为 1 年。在 `Repository access` 部分，选择 `Only selected repositories`，然后选择你的 forked 仓库。在 `Repository access` 部分，选择 `Secrets`、`Metadata` 和 `Actions`，将权限设置为 `Read & write`。最后，点击 `Generate token` 完成令牌的创建。
 
-Please save your new **`fine-grained token [5]`** for later use.
+请将你的新的 `fine-grained token` 保存为 **`Value[5]`** 以备后用。
 
 ### <font color="Olive">**6. Add the secrets to your repository.**</font>
 
-Now, all the prerequisites are ready. Let's add the secrets to your repository.
+现在，所有的前提条件都已经准备就绪。让我们把密钥添加到你的代码仓库中。
 
-Go back to your new forked repository, click `Settings` in the end of left sidebar, and then click `Secrets and variables` in the left sidebar.
+返回你新创建的分叉仓库，点击左侧边栏末尾的 `Settings`，然后点击左侧边栏的 `Secrets and variables`。
 
-Click `Actions`, then choose the `Secrets` tab, and then click `New repository secret`.
+点击 `Actions`，然后选择 `Secrets` 选项卡，再点击 `New repository secret`。
 
-Please add 4 secrets to your repository:
-- `CONFIG_ID`：Save `Application (client) ID [1]` as the value.
-- `CONFIG_KEY`：Save `Value [3]` as the value.
-- `CONFIG_REFRESH`：Save `refresh_token [4]` as the value.
-- `E5_API`：Save `fine-grained token [5]` as the value.
+请向你的代码仓库添加以下 4 个密钥：
+- `CONFIG_ID`：Save `Application (client) ID` as the value. --> **`Value[1]`**
+- `CONFIG_KEY`：Save `Value [3]` as the value. --> **`Value[3]`**
+- `CONFIG_REFRESH`：Save `refresh_token` as the value. --> **`Value[4]`**
+- `E5_API`：Save `fine-grained token` as the value. --> **`Value[5]`**
 
-Now everything is ready. You leave the rest to GitHub Actions.
+现在一切准备就绪。泡一杯咖啡，然后把剩下的工作交给 GitHub Actions。
 
-## **Disclaimer**
-This project is for educational and experimental purposes only. I am not responsible for any damage caused by this project. Please use it at your own risk.
+## **免责声明**
+注意：本项目仅供教育和实验目的使用。对于由本项目造成的任何损害，我不承担任何责任。请自行承担使用风险。

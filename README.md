@@ -4,6 +4,7 @@
 ![License](https://shields.io/badge/license-MIT-%23373737)
 ![Repo Size](https://img.shields.io/github/repo-size/KKtheGhost/E5_Developer_Renew)
 ![Contributors](https://img.shields.io/github/contributors/KKtheGhost/E5_Developer_Renew)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Documentation: [ENG](https://github.com/KKtheGhost/E5_Developer_Renew/blob/master/README.md) | [简体中文](https://github.com/KKtheGhost/E5_Developer_Renew/blob/master/README_CN.md)
 
@@ -42,7 +43,7 @@ Then in the `Redirect URI` section, select `Web` and fill in `http://localhost:5
 
 Click `Register` to finish the registration.
 
-Please save your new application's **`Application (client) ID [1]`** and **`Client secret [2]`** for later use.
+Please save your new application's **`Application (client) ID`** as **`Value[1]`** and **`Client secret`** as **`Value[2]`** for later use.
 
 ### <font color="Olive">**3. Create a new certificate for you new application.**</font>
 
@@ -50,7 +51,7 @@ Click your new application's name in the `App registrations` page, and then clic
 
 Click `New client secret` and fill in a description for your new client secret.
 
-Please save your new client secret's **`Value [3]`** for later use.
+Please save your `new client secret` as **`Value [3]`** for later use.
 
 Then click `Authentication` in the left sidebar. In `Implicit grant and hybrid flows`, select `ID tokens` and `Access tokens`. The click `Save` to finish the `Authentication` configuration.
 
@@ -74,7 +75,7 @@ To be honest, not all of the permissions are required. It depends on the API lis
 
 Finally, click `Grant admin consent for <your tenant name>` to grant the permissions to your tenant.
 
-### <font color="Olive">**4. Get your first `refresh token [4]`.**</font>
+### <font color="Olive">**4. Get your first `refresh token` as `Value[4]`.**</font>
 
 Install `rclone` on your computer, and then run the following command to get your first refresh token.
 
@@ -114,7 +115,7 @@ Select `Fine-grained permissions`, and then click `Generate new token`.
 
 Fill in a description for your new token, set the expiration date to 1 year. In `Repository access` section, select `Only select repositories`, and then select your forked repository. In `Repository access` section, select `Secrets`, `Metadata` and `Actions`, set the permission to `Read & write`. Finally, click `Generate token` to finish the token creation.
 
-Please save your new **`fine-grained token [5]`** for later use.
+Please save your new **`fine-grained token`** as **`Value[5]`** for later use.
 
 ### <font color="Olive">**6. Add the secrets to your repository.**</font>
 
@@ -125,10 +126,10 @@ Go back to your new forked repository, click `Settings` in the end of left sideb
 Click `Actions`, then choose the `Secrets` tab, and then click `New repository secret`.
 
 Please add 4 secrets to your repository:
-- `CONFIG_ID`：Save `Application (client) ID [1]` as the value.
-- `CONFIG_KEY`：Save `Value [3]` as the value.
-- `CONFIG_REFRESH`：Save `refresh_token [4]` as the value.
-- `E5_API`：Save `fine-grained token [5]` as the value.
+- `CONFIG_ID`：Save `Application (client) ID` as the value. --> **`Value[1]`**
+- `CONFIG_KEY`：Save `Value [3]` as the value. --> **`Value[3]`**
+- `CONFIG_REFRESH`：Save `refresh_token` as the value. --> **`Value[4]`**
+- `E5_API`：Save `fine-grained token` as the value. --> **`Value[5]`**
 
 Now everything is ready. You leave the rest to GitHub Actions.
 
